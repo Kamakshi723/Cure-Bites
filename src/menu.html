@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8f0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #f0f8f0;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+        }
+
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            margin-left: 30px;
+            font-weight: 400;
+        }
+
+        .menu-section {
+            margin-bottom: 40px;
+        }
+
+        .menu-section h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .menu-section .subtitle {
+            font-size: 16px;
+            color: #777;
+            font-weight: 400;
+        }
+
+        .dish-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: flex-start;
+
+        }
+
+        nav ul li a {
+            color: white;
+            /* makes text white */
+            text-decoration: none;
+            /* removes underline */
+            font-weight: bold;
+            transition: color 0.3s ease;
+            /* smooth hover color change */
+        }
+
+        nav ul li a:hover {
+            color: #facc15;
+            /* golden yellow on hover */
+        }
+
+        nav ul li a:visited {
+            color: white;
+            /* keeps visited links white too */
+        }
+
+        header {
+            background: linear-gradient(to right, #059669, #047857);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+        .dish-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 150px;
+        }
+
+        .dish-card img {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border: 2px solid #ccc;
+        }
+
+
+
+        .dish-card p {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links {
+                margin-top: 15px;
+            }
+
+            .nav-links a {
+                margin: 0 10px;
+            }
+
+            .dish-grid {
+                justify-content: center;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo-container">
+            <img src="final_logo.jpg" alt="Cure Bites Logo" class="logo-img">
+            <span class="logo-text">Cure Bites</span>
+        </div>
+
+        <div class="container">
+
+            <nav>
+                <ul style="list-style: none; display: flex; gap: 15px;">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About Us</a></li>
+                    <li><a href="/subscription">Subscription </a></li>
+                    <li><a href="/contact">Contact Us</a></li>
+                    <li><a href="/sign">Log in</a></li>
+                    <li><a href="/reviews">Review</a></li>
+                </ul>
+            </nav>
+
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="menu-section">
+            <h2>Breakfast</h2>
+            <div class="dish-grid" id="breakfast-grid">
+            </div>
+        </section>
+
+        <section class="menu-section">
+            <h2>Lunch</h2>
+            <div class="dish-grid" id="lunch-grid">
+
+            </div>
+        </section>
+
+        <section class="menu-section">
+            <h2>Signature Dishes <span class="subtitle">(You May Never Have Tried)</span></h2>
+            <div class="dish-grid" id="signature-grid">
+
+            </div>
+        </section>
+
+        <section class="menu-section">
+            <h2>Desserts</h2>
+            <div class="dish-grid" id="dessert-grid">
+
+            </div>
+
+        </section>
+    </main>
+    <script>
+        // 1. Wait until the entire HTML page is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+                // 2. Fetch the JSON data from the file you created
+                fetch('data/menuData.json')
+                    .then(response => {
+                        // Check if the file was found
+                        if (!response.ok) {
+                            // Throw an error if the JSON file is missing or path is wrong
+                            throw new Error('Failed to load menu data from data/menuData.json');
+                        }
+                        return response.json(); // Convert the JSON text into a JavaScript list (array)
+                    })
+                    .then(data => {
+                        // 3. Once we have the list, start building the menu
+                        generateMenu(data);
+                    })
+                    .catch(error => {
+                        console.error('Error loading menu data:', error);
+                        // Display an error message directly on the page
+                        document.querySelector('main').innerHTML = '<p style="text-align:center; color:red;">ERROR: Could not load menu data. Check your data/menuData.json file.</p>';
+                    });
+        });
+
+            // Function to create the HTML for the menu
+            function generateMenu(data) {
+            // Group the dishes by their 'category' (Breakfast, Lunch, etc.)
+            const dishesByCategory = data.reduce((acc, dish) => {
+                acc[dish.category] = acc[dish.category] || [];
+            acc[dish.category].push(dish);
+            return acc;
+            }, { });
+
+            // Loop through each category and place dishes in the correct HTML section
+            for (const category in dishesByCategory) {
+
+                let containerId;
+            
+            if (category === "Breakfast") containerId = "breakfast-grid"; 
+            else if (category === "Lunch") containerId = "lunch-grid";
+            else if (category === "Signature Dishes") containerId = "signature-grid"; 
+            else if (category === "Desserts") containerId = "dessert-grid";
+
+            const gridContainer = document.getElementById(containerId);
+
+            if (gridContainer) {
+                let htmlContent = '';
+                    dishesByCategory[category].forEach(dish => {
+                // Create the HTML card for each dish
+                htmlContent += `
+                            <div class="dish-card" data-id="${dish.id}" onclick="showDishDetails('${dish.name}')">
+                                <img src="${dish.img}" alt="${dish.name}">
+                                <p>${dish.name}</p>
+                            </div>
+                        `;
+                    });
+            gridContainer.innerHTML = htmlContent; // Insert all the cards into the page
+                }
+            }
+        }
+        //Interactivity: Simple Click Handler for the Dish Cards ---
+        function showDishDetails(dishName){
+
+            // Fulfills the "Interactivity" requirement for this page
+            alert(`You selected: ${dishName}! This item will be included in your personalized plan.`);
+        }
+    
+    </script>
+</body>
+</html>
+
+
+            
+        
+
+                
+    
+                
+
